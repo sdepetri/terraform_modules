@@ -17,6 +17,8 @@ resource "aws_autoscaling_group" "sd_asg" {
   max_size            = 3
   min_size            = 2
   vpc_zone_identifier = var.private_subnets
+  health_check_type = "EC2"
+  health_check_grace_period = 60
   launch_template {
     id      = aws_launch_template.sd_lt.id
     version = "$Latest"
