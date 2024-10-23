@@ -17,3 +17,8 @@ output "alb_zone_id" {
   description = "Zone ID of the created Application Load Balancer"
   value       = aws_lb.sd_alb.zone_id
 }
+
+output "https_listener_arn" {
+  description = "ARN of the HTTPS listener"
+  value       = aws_lb.sd_alb.arn
+}

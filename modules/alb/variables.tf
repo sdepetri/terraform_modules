@@ -18,3 +18,7 @@ variable "target_group_name" {
 variable "vpc_id" {
   description = "VPC ID where the ALB will be deployed"
 }
+
+variable "certificate_arn" {
+  description = "ARN of the SSL certificate for the HTTPS listener"
+}

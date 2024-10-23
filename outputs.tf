@@ -17,3 +17,7 @@ output "website_url" {
   description = "Website URL"
   value       = "https://${var.domain_name}"
 }
+output "https_listener_arn" {
+  description = "ARN of the HTTPS listener from the ALB module"
+  value       = module.alb.https_listener_arn
+}

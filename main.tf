@@ -111,24 +111,11 @@ module "alb" {
   source = "./modules/alb"
 
   alb_name          = var.alb_name
+  certificate_arn   = data.aws_acm_certificate.sd-certificate.arn
   security_group_id = aws_security_group.alb_sg.id
   public_subnets    = module.network.public_subnets
   vpc_id            = module.network.vpc_id
   target_group_name = "sd-target-group"
-}
-
-# HTTPS listener
-resource "aws_lb_listener" "https" {
-  load_balancer_arn = module.alb.alb_arn
-  port              = "443"
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = data.aws_acm_certificate.sd-certificate.arn
-
-  default_action {
-    type             = "forward"
-    target_group_arn = module.alb.target_group_arn
-  }
 }
 
 # HTTP to HTTPS redirect
