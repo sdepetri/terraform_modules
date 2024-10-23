@@ -165,13 +165,13 @@ resource "aws_route53_record" "alb_record" {
     module.alb
   ]
 }
-resource "aws_dynamodb_table" "sd_terraform_lock" {
-  name         = "sd_terraform_lock"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "LockID"
+# resource "aws_dynamodb_table" "sd_terraform_lock" {
+#   name         = "sd_terraform_lock"
+#   billing_mode = "PAY_PER_REQUEST"
+#   hash_key     = "LockID"
 
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
-}
+#   attribute {
+#     name = "LockID"
+#     type = "S"
+#   }
+# }
