@@ -1,4 +1,4 @@
-resource "aws_security_group" "sd_sd_alb_sg" {
+resource "aws_security_group" "sd_alb_sg" {
   name        = "sd-alb-sg"
   description = "Security group for the ALB"
   vpc_id      = data.aws_vpc.internship_vpc.id
@@ -27,7 +27,7 @@ resource "aws_security_group" "sd_ec2_sg" {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    security_groups = [aws_security_group.sd_sd_alb_sg.id]
+    security_groups = [aws_security_group.sd_alb_sg_alb_sg.id]
   }
 
   egress {
