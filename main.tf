@@ -76,10 +76,10 @@ module "sd_ecs" {
   task_family       = "sd-task"
   container_name    = "sd-container"
   image_url         = "253490770873.dkr.ecr.us-east-2.amazonaws.com/internship/sd-registry-test:V3.0"
-  task_cpu          = 128
-  task_memory       = 128
-  container_cpu     = 256
-  container_memory  = 512
+  task_cpu          = 512
+  task_memory       = 512
+  container_cpu     = 64
+  container_memory  = 128
   container_port    = 80
   service_name      = "sd-service"
   desired_count     = 2
