@@ -36,74 +36,9 @@ data "aws_acm_certificate" "sd-certificate" {
   most_recent = true
 }
 
-
-
-
-# Auto Scaling Module
-
-module "autoscaling" {
-  source = "./modules/autoscaling"
-
-  launch_template_name   = var.launch_template_name
-  ami_id                 = var.ami_id
-  instance_type          = var.instance_type
-  security_group_id      = aws_security_group.ecs_sg.id # Corregido para usar el security group que creamos
-  user_data_file         = var.user_data_file
-  autoscaling_group_name = var.asg_name
-  private_subnets        = module.network.private_subnets # Usando el output del módulo network
-}
-
 # Network Module
 module "network" {
   source = "./modules/network"
-}
-
-# Security Groups
-resource "aws_security_group" "sd_alb_sg" {
-  name        = "sd-alb-sg2"
-  description = "Security group for ALB"
-  vpc_id      = module.network.vpc_id
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-resource "aws_security_group" "ecs_sg" {
-  name        = "sd-ecs-sg"
-  description = "Security group for ECS tasks"
-  vpc_id      = module.network.vpc_id
-
-  ingress {
-    from_port       = 0
-    to_port         = 65535
-    protocol        = "tcp"
-    security_groups = [aws_security_group.sd_alb_sg.id]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 }
 
 # ALB Module
@@ -135,18 +70,20 @@ resource "aws_lb_listener" "http_redirect" {
 }
 
 # ECS Module
-module "sd-ecs" {
-  source = "./modules/sd-ecs"
-
-  cluster_name          = var.cluster_name
-  container_image       = var.container_image
-  execution_role_arn    = var.execution_role_arn
-  service_desired_count = var.service_desired_count
-  target_group_arn      = module.alb.target_group_arn
-  task_cpu              = var.task_cpu
-  task_memory           = var.task_memory
-  container_cpu         = var.container_cpu
-  container_memory      = var.container_memory
+module "sd_ecs" {
+  source            = "./modules/sd-ecs"
+  cluster_name      = "sd-cluster"
+  task_family       = "sd-task"
+  container_name    = "sd-container"
+  image_url         = "253490770873.dkr.ecr.us-east-2.amazonaws.com/internship/sd-registry-test:V3.0"
+  task_cpu          = 128
+  task_memory       = 128
+  container_cpu     = 256
+  container_memory  = 512
+  container_port    = 80
+  service_name      = "sd-service"
+  desired_count     = 2
+  target_group_arn  = module.alb.target_group_arn
 }
 
 # Route53 Record

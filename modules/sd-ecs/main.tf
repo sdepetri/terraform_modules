@@ -3,31 +3,22 @@ resource "aws_ecs_cluster" "sd_cluster" {
 }
 
 resource "aws_ecs_task_definition" "sd_task" {
-  family                   = "sd-task"
-  network_mode            = "bridge"
+  family                   = var.task_family
+  network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
-  cpu                     = var.task_cpu
-  memory                  = var.task_memory
-  execution_role_arn      = var.execution_role_arn
-
-  container_definitions = jsonencode([
+  cpu                      = var.task_cpu
+  memory                   = var.task_memory
+  container_definitions    = jsonencode([
     {
-      name      = "sd-container"
-      image     = var.container_image
+      name      = var.container_name
+      image     = var.image_url
       cpu       = var.container_cpu
       memory    = var.container_memory
       essential = true
       portMappings = [
         {
-          containerPort = 80
-          hostPort     = 0
-          protocol     = "tcp"
-        }
-      ]
-      environment = [
-        {
-          name  = "ENV"
-          value = "dev"
+          containerPort = var.container_port
+          hostPort      = var.container_port
         }
       ]
     }
@@ -35,17 +26,19 @@ resource "aws_ecs_task_definition" "sd_task" {
 }
 
 resource "aws_ecs_service" "sd_service" {
-  name            = "sd-service"
+  name            = var.service_name
   cluster         = aws_ecs_cluster.sd_cluster.id
   task_definition = aws_ecs_task_definition.sd_task.arn
-  desired_count   = var.service_desired_count
+  desired_count   = var.desired_count
+  launch_type     = "EC2"
 
   load_balancer {
     target_group_arn = var.target_group_arn
-    container_name   = "sd-container"
-    container_port   = 80
+    container_name   = var.container_name
+    container_port   = var.container_port
   }
 
+  depends_on = [aws_ecs_task_definition.sd_task]
 }
 
 # resource "aws_cloudwatch_metric_alarm" "service_cpu" {
