@@ -5,7 +5,7 @@ terraform {
     bucket         = "sd-pipeline-php"
     key            = "terraform-ecs/terraform.tfstate"
     region         = "us-east-2"
-    dynamodb_table = "terraform-lock"
+    dynamodb_table = "sd_terraform_lock"
     encrypt        = true
   }
 }

@@ -18,11 +18,7 @@ resource "aws_lb_listener" "http_listener" {
   port              = 80
   protocol          = "HTTP"
   default_action {
-    type             = "forward"
+    type             = "redirect"
     target_group_arn = aws_lb_target_group.sd_tg.arn
   }
-}
-
-output "alb_dns_name" {
-  value = aws_lb.sd_alb.dns_name
 }

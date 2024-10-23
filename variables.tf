@@ -13,12 +13,12 @@ variable "environment" {
 
 # variables para ECR
 variable "ecr_registry" {
-  type = string
+  type        = string
   description = "URL del registro ECR"
 }
 
 variable "ecr_repository" {
-  type = string
+  type        = string
   description = "Nombre del repositorio en ECR"
 }
 
@@ -95,7 +95,7 @@ variable "launch_template_name" {
 variable "ami_id" {
   description = "AMI ID for ECS instances"
   type        = string
-  default     = "ami-0c55b159cbfafe1f0"  # Asegúrate de usar una AMI ECS optimizada actual
+  default     = "ami-0c55b159cbfafe1f0" # Asegúrate de usar una AMI ECS optimizada actual
 }
 
 variable "asg_name" {
@@ -111,29 +111,6 @@ variable "user_data_file" {
 }
 
 # variables.tf (raíz)
-variable "cluster_name" {
-  description = "Name of the ECS cluster"
-  type        = string
-  default     = "sd-cluster"
-}
-
-variable "container_image" {
-  description = "Container image URI"
-  type        = string
-  default     = "253490770873.dkr.ecr.us-east-2.amazonaws.com/internship/sd-registry-test:V3.0"
-}
-
-variable "execution_role_arn" {
-  description = "ARN of the ECS task execution role"
-  type        = string
-  default     = "arn:aws:iam::253490770873:role/ECSTaskExecutionRoleLab"
-}
-
-variable "service_desired_count" {
-  description = "Desired number of tasks in the service"
-  type        = number
-  default     = 2
-}
 
 variable "task_cpu" {
   description = "CPU units for the task"

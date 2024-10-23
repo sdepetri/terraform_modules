@@ -5,12 +5,12 @@ output "alb_dns_name" {
 
 output "cluster_name" {
   description = "Name of the ECS cluster"
-  value       = module.ecs.cluster_name
+  value       = module.sd-ecs.cluster_name
 }
 
 output "service_name" {
   description = "Name of the ECS service"
-  value       = module.ecs.service_name
+  value       = module.sd-ecs.service_name
 }
 
 output "website_url" {

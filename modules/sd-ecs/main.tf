@@ -1,3 +1,8 @@
+# module "alb" {
+#   source = "./alb"
+#   name = var.name
+# }
+
 resource "aws_ecs_cluster" "sd_cluster" {
   name = var.cluster_name
 }
@@ -45,6 +50,9 @@ resource "aws_ecs_service" "sd_service" {
     container_name   = "sd-container"
     container_port   = 80
   }
+    depends_on = [
+    module.alb
+  ]
 }
 
 # resource "aws_cloudwatch_metric_alarm" "service_cpu" {

@@ -1,38 +1,40 @@
 data "aws_vpc" "internship_vpc" {
   id = "vpc-01fc1ec68a8b03eb9"
 }
-
 data "aws_subnet" "public_subnet_1" {
   id = "subnet-0d4b3436fdda9803f"
 }
-
 data "aws_subnet" "public_subnet_2" {
   id = "subnet-09d1848907ea68bca"
 }
-
 data "aws_subnet" "private_subnet_1" {
   id = "subnet-0d5a03c63e1d24a17"
 }
-
 data "aws_subnet" "private_subnet_2" {
   id = "subnet-00ec5ce7c1e376323"
 }
-
-data "aws_nat_gateway" "NG1" {
-  subnet_id = data.aws_subnet.public_subnet_1.id
-}
-
 data "aws_nat_gateway" "NG2" {
   subnet_id = data.aws_subnet.public_subnet_2.id
 }
-
+data "aws_nat_gateway" "NG1" {
+  subnet_id = data.aws_subnet.public_subnet_1.id
+}
 data "aws_internet_gateway" "default" {
   filter {
     name   = "attachment.vpc-id"
     values = [data.aws_vpc.internship_vpc.id]
   }
 }
+data "aws_route53_zone" "hosted_zone" {
+  name = "sdepetri.site."
+  # private_zone = false
+}
 
+data "aws_acm_certificate" "sd-certificate" {
+  domain      = "sdepetri.site"
+  statuses    = ["ISSUED"]
+  most_recent = true
+}
 
 
 
@@ -41,14 +43,14 @@ data "aws_internet_gateway" "default" {
 
 module "autoscaling" {
   source = "./modules/autoscaling"
-  
+
   launch_template_name   = var.launch_template_name
-  ami_id                = var.ami_id
-  instance_type         = var.instance_type
-  security_group_id     = aws_security_group.ecs_sg.id  # Corregido para usar el security group que creamos
-  user_data_file        = var.user_data_file
+  ami_id                 = var.ami_id
+  instance_type          = var.instance_type
+  security_group_id      = aws_security_group.ecs_sg.id # Corregido para usar el security group que creamos
+  user_data_file         = var.user_data_file
   autoscaling_group_name = var.asg_name
-  private_subnets       = module.network.private_subnets  # Usando el output del módulo network
+  private_subnets        = module.network.private_subnets # Usando el output del módulo network
 }
 
 # Network Module
@@ -146,18 +148,18 @@ resource "aws_lb_listener" "http_redirect" {
 }
 
 # ECS Module
-module "ecs" {
-  source = "./modules/ecs"
+module "sd-ecs" {
+  source = "./modules/sd-ecs"
 
-  # cluster_name          = var.cluster_name
-  # container_image       = var.container_image
-  # execution_role_arn    = var.execution_role_arn
-  # service_desired_count = var.service_desired_count
-  # target_group_arn      = module.alb.target_group_arn
-  # task_cpu             = var.task_cpu
-  # task_memory          = var.task_memory
-  # container_cpu        = var.container_cpu
-  # container_memory     = var.container_memory
+  cluster_name          = var.cluster_name
+  container_image       = var.container_image
+  execution_role_arn    = var.execution_role_arn
+  service_desired_count = var.service_desired_count
+  target_group_arn      = module.alb.target_group_arn
+  task_cpu              = var.task_cpu
+  task_memory           = var.task_memory
+  container_cpu         = var.container_cpu
+  container_memory      = var.container_memory
 }
 
 # Route53 Record
@@ -175,4 +177,14 @@ resource "aws_route53_record" "alb_record" {
   depends_on = [
     module.alb
   ]
+}
+resource "aws_dynamodb_table" "sd_terraform_lock" {
+  name         = "sd_terraform_lock"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "LockID"
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
 }
