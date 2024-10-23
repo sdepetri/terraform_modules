@@ -59,8 +59,8 @@ module "network" {
 }
 
 # Security Groups
-resource "aws_security_group" "alb_sg" {
-  name        = "sd-alb-sg"
+resource "aws_security_group" "sd_alb_sg" {
+  name        = "sd-alb-sg2"
   description = "Security group for ALB"
   vpc_id      = module.network.vpc_id
 
@@ -95,7 +95,7 @@ resource "aws_security_group" "ecs_sg" {
     from_port       = 0
     to_port         = 65535
     protocol        = "tcp"
-    security_groups = [aws_security_group.alb_sg.id]
+    security_groups = [aws_security_group.sd_alb_sg.id]
   }
 
   egress {
@@ -112,7 +112,7 @@ module "alb" {
 
   alb_name          = var.alb_name
   certificate_arn   = data.aws_acm_certificate.sd-certificate.arn
-  security_group_id = aws_security_group.alb_sg.id
+  security_group_id = aws_security_group.sd_alb_sg.id
   public_subnets    = module.network.public_subnets
   vpc_id            = module.network.vpc_id
   target_group_name = "sd-target-group"
