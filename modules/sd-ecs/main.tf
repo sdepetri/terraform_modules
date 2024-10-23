@@ -1,6 +1,11 @@
 # module "alb" {
 #   source = "./alb"
-#   name = var.name
+
+#   alb_name          = var.alb_name
+#   security_group_id = aws_security_group.alb_sg.id
+#   public_subnets    = module.network.public_subnets
+#   vpc_id            = module.network.vpc_id
+#   target_group_name = "sd-target-group"
 # }
 
 resource "aws_ecs_cluster" "sd_cluster" {
@@ -44,6 +49,11 @@ resource "aws_ecs_service" "sd_service" {
   cluster         = aws_ecs_cluster.sd_cluster.id
   task_definition = aws_ecs_task_definition.sd_task.arn
   desired_count   = var.service_desired_count
+
+  depends_on = [
+    aws_lb_listener.http_listener,
+    aws_lb_target_group.sd_tg
+  ]
 
   load_balancer {
     target_group_arn = var.target_group_arn
