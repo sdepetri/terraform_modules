@@ -11,7 +11,7 @@ resource "aws_ecs_task_definition" "sd_task" {
   container_definitions    = jsonencode([
     {
       name      = var.container_name
-      image     = var.image_url
+      image     = var.container_image
       cpu       = var.container_cpu
       memory    = var.container_memory
       essential = true

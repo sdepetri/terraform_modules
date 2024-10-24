@@ -80,7 +80,7 @@ variable "launch_template_name" {
 variable "ami_id" {
   description = "AMI ID for ECS instances"
   type        = string
-  default     = "ami-0c55b159cbfafe1f0" # Asegúrate de usar una AMI ECS optimizada actual
+  default     = "ami-050cd642fd83388e4" #Amazon Linux 2023 AMI 2023.6.20241010.0 x86_64 HVM kernel-6.1 owner "amazon"
 }
 
 variable "asg_name" {
@@ -102,6 +102,7 @@ variable "cluster_name" {
   type        = string
   default     = "sd-cluster"
 }
+
 
 variable "container_image" {
   description = "Container image URI"
@@ -164,14 +165,12 @@ variable "task_family" {
   default = "sd-task"
 }
 
-variable "image_url" {
-  description = "URL of the container image"
-}
-
 variable "service_name" {
   description = "Name of the ECS service"
+  default = "sd-service"
 }
 
 variable "target_group_arn" {
   description = "ARN of the target group for the ECS service"
+  type        = string
 }

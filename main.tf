@@ -74,19 +74,19 @@ module "alb" {
 
 # ECS Module
 module "sd_ecs" {
-  source            = "./modules/sd-ecs"
-  cluster_name      = "sd-cluster"
-  task_family       = "sd-task"
-  container_name    = "sd-container"
-  image_url         = "253490770873.dkr.ecr.us-east-2.amazonaws.com/internship/sd-registry-test:V3.0"
-  task_cpu          = 512
-  task_memory       = 512
-  container_cpu     = 64
-  container_memory  = 128
-  container_port    = 80
-  service_name      = "sd-service"
-  task_desired_count     = 2
-  target_group_arn  = module.alb.target_group_arn
+  source                = "./modules/sd-ecs"
+  cluster_name          = var.cluster_name
+  task_family           = var.task_family
+  container_name        = var.container_name
+  container_image       = var.container_image  #la cambie a/sd-pipeline-test:latest"
+  task_cpu              = var.task_cpu
+  task_memory           = var.task_memory
+  container_cpu         = var.container_cpu
+  container_memory      = var.container_memory
+  container_port        = var.container_port
+  service_name          = var.service_name
+  task_desired_count    = var.task_desired_count
+  target_group_arn      = var.target_group_arn
 }
 
 # Route53 Record

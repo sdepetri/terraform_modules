@@ -18,7 +18,7 @@ variable "container_name" {
   description = "Name of the container"
 }
 
-variable "image_url" {
+variable "container_image" {
   description = "URL of the container image"
 }
 
