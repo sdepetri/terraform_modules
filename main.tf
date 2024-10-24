@@ -41,6 +41,22 @@ module "network" {
   source = "./modules/network"
 }
 
+module "sd_asg" {
+  source                 = "./modules/autoscaling"
+  launch_template_name   = "sd_launch_template"
+  ami_id                 = var.ami_id
+  instance_type          = var.instance_type
+  security_group_id      = aws_security_group.sd_ec2_sg.id 
+  user_data_file         = "${path.module}/user_data.sh"
+  autoscaling_group_name = "sd_asg"
+  private_subnets        = [data.aws_subnet.private_subnet_1.id, data.aws_subnet.private_subnet_2.id]
+
+  # Variables para la capacidad de Auto Scaling
+  min_size               = var.asg_min_size
+  desired_capacity       = var.asg_desired_capacity
+  max_size               = var.asg_max_size
+}
+
 # ALB Module
 module "alb" {
   source = "./modules/alb"
@@ -51,22 +67,6 @@ module "alb" {
   public_subnets    = module.network.public_subnets
   vpc_id            = module.network.vpc_id
   target_group_name = "sd-target-group"
-}
-
-# HTTP to HTTPS redirect
-resource "aws_lb_listener" "http_redirect" {
-  load_balancer_arn = module.alb.alb_arn
-  port              = "80"
-  protocol          = "HTTP"
-
-  default_action {
-    type = "redirect"
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
-    }
-  }
 }
 
 # ECS Module

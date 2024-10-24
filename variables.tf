@@ -54,10 +54,21 @@ variable "instance_type" {
   default     = "t3.micro"
 }
 
+variable "security_group_id" {
+  description = "Security Group ID for the instances"
+  type        = string
+  default     = "sd_alb_sg"  # Reemplaza con tu ID de grupo de seguridad real
+}
+
 variable "asg_min_size" {
   description = "Minimum size of Auto Scaling Group"
   type        = number
   default     = 2
+}
+
+variable "private_subnets" {
+  description = "List of private subnets for the Auto Scaling Group"
+  type        = list(string)
 }
 
 variable "asg_max_size" {
