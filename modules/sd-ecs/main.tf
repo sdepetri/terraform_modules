@@ -29,7 +29,7 @@ resource "aws_ecs_service" "sd_service" {
   name            = var.service_name
   cluster         = aws_ecs_cluster.sd_cluster.id
   task_definition = aws_ecs_task_definition.sd_task.arn
-  desired_count   = var.desired_count
+  desired_count   = var.task_desired_count
   launch_type     = "EC2"
 
   load_balancer {

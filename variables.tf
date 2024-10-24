@@ -22,42 +22,17 @@ variable "ecr_repository" {
   description = "Nombre del repositorio en ECR"
 }
 
-# ECS Variables
-variable "cluster_name" {
-  description = "Name of the ECS cluster"
-  type        = string
-  default     = "sd-cluster"
-}
-
-variable "container_image" {
-  description = "Container image URI"
-  type        = string
-  default     = "253490770873.dkr.ecr.us-east-2.amazonaws.com/internship/sd-registry-test:V3.0"
-}
-
-variable "execution_role_arn" {
-  description = "ARN of the ECS task execution role"
-  type        = string
-  default     = "arn:aws:iam::253490770873:role/ECSTaskExecutionRoleLab"
-}
-
-variable "service_desired_count" {
-  description = "Desired number of tasks in the service"
-  type        = number
-  default     = 2
-}
-
 # Auto Scaling Variables
 variable "instance_type" {
   description = "EC2 instance type for ECS cluster"
   type        = string
-  default     = "t3.micro"
+  default     = "t2.micro"
 }
 
 variable "security_group_id" {
   description = "Security Group ID for the instances"
   type        = string
-  default     = "sd_alb_sg"  # Reemplaza con tu ID de grupo de seguridad real
+  default     = "sd_alb_sg" 
 }
 
 variable "asg_min_size" {
@@ -96,7 +71,6 @@ variable "domain_name" {
   default     = "sdepetri.site"
 }
 
-# variables.tf (raíz)
 variable "launch_template_name" {
   description = "Name of the Launch Template"
   type        = string
@@ -121,7 +95,57 @@ variable "user_data_file" {
   default     = "user_data.sh"
 }
 
-# variables.tf (raíz)
+# Ecs variables
+
+variable "cluster_name" {
+  description = "Name of the ECS cluster"
+  type        = string
+  default     = "sd-cluster"
+}
+
+variable "container_image" {
+  description = "Container image URI"
+  type        = string
+  default     = "253490770873.dkr.ecr.us-east-2.amazonaws.com/internship/sd-registry-test:V3.0"
+}
+
+variable "container_name" {
+  description = "Name of the container"
+  default = "sd-container"
+}
+
+variable "execution_role_arn" {
+  description = "ARN of the ECS task execution role"
+  type        = string
+  default     = "arn:aws:iam::253490770873:role/ECSTaskExecutionRoleLab"
+}
+
+# container variables
+
+variable "container_port" {
+  description = "Port for the container"
+  default = 80
+}
+
+variable "container_cpu" {
+  description = "CPU units for the container"
+  type        = number
+  default     = 64
+}
+
+variable "container_memory" {
+  description = "Memory for the container in MiB"
+  type        = number
+  default     = 128
+}
+
+#task variables
+
+variable "task_desired_count" {
+  description = "Desired number of tasks in the service"
+  type        = number
+  default     = 2
+}
 
 variable "task_cpu" {
   description = "CPU units for the task"
@@ -135,14 +159,24 @@ variable "task_memory" {
   default     = 512
 }
 
-variable "container_cpu" {
-  description = "CPU units for the container"
-  type        = number
-  default     = 64
+variable "task_family" {
+  description = "Family of the ECS task definition"
+  default = "sd-task"
 }
 
-variable "container_memory" {
-  description = "Memory for the container in MiB"
-  type        = number
-  default     = 128
+variable "image_url" {
+  description = "URL of the container image"
+}
+
+variable "service_name" {
+  description = "Name of the ECS service"
+}
+
+variable "task_desired_count" {
+  description = "Desired number of tasks"
+  default = 2
+}
+
+variable "target_group_arn" {
+  description = "ARN of the target group for the ECS service"
 }

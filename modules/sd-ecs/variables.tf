@@ -38,7 +38,7 @@ variable "service_name" {
   description = "Name of the ECS service"
 }
 
-variable "desired_count" {
+variable "task_desired_count" {
   description = "Desired number of tasks"
 }
 

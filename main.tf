@@ -40,7 +40,7 @@ data "aws_acm_certificate" "sd-certificate" {
 module "network" {
   source = "./modules/network"
 }
-
+# ECS Module
 module "sd_asg" {
   source                 = "./modules/autoscaling"
   launch_template_name   = "sd_launch_template"
@@ -50,8 +50,11 @@ module "sd_asg" {
   user_data_file         = "${path.module}/user_data.sh"
   autoscaling_group_name = "sd_asg"
   private_subnets        = [data.aws_subnet.private_subnet_1.id, data.aws_subnet.private_subnet_2.id]
+  # variables para mi task definition
+  
 
-  # Variables para la capacidad de Auto Scaling
+
+  # Variables para el Auto Scaling
   min_size               = var.asg_min_size
   desired_capacity       = var.asg_desired_capacity
   max_size               = var.asg_max_size
@@ -82,7 +85,7 @@ module "sd_ecs" {
   container_memory  = 128
   container_port    = 80
   service_name      = "sd-service"
-  desired_count     = 2
+  task_desired_count     = 2
   target_group_arn  = module.alb.target_group_arn
 }
 
