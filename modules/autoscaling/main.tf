@@ -24,3 +24,4 @@ resource "aws_autoscaling_group" "sd_asg" {
     version = "$Latest"
   }
 }
+

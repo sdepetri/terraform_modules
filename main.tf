@@ -40,24 +40,21 @@ data "aws_acm_certificate" "sd-certificate" {
 module "network" {
   source = "./modules/network"
 }
-# ECS Module
+# Autoscaling
 module "sd_asg" {
   source                 = "./modules/autoscaling"
-  launch_template_name   = "sd_launch_template"
+  launch_template_name   = var.launch_template_name
   ami_id                 = var.ami_id
   instance_type          = var.instance_type
-  security_group_id      = aws_security_group.sd_ec2_sg.id 
+  security_group_id      = aws_security_group.sd_ec2_sg.id
   user_data_file         = "${path.module}/user_data.sh"
   autoscaling_group_name = "sd_asg"
   private_subnets        = [data.aws_subnet.private_subnet_1.id, data.aws_subnet.private_subnet_2.id]
-  # variables para mi task definition
   
-
-
   # Variables para el Auto Scaling
-  min_size               = var.asg_min_size
-  desired_capacity       = var.asg_desired_capacity
-  max_size               = var.asg_max_size
+  min_size         = var.asg_min_size
+  desired_capacity = var.asg_desired_capacity
+  max_size         = var.asg_max_size
 }
 
 # ALB Module
@@ -74,19 +71,19 @@ module "alb" {
 
 # ECS Module
 module "sd_ecs" {
-  source                = "./modules/sd-ecs"
-  cluster_name          = var.cluster_name
-  task_family           = var.task_family
-  container_name        = var.container_name
-  container_image       = var.container_image  #la cambie a/sd-pipeline-test:latest"
-  task_cpu              = var.task_cpu
-  task_memory           = var.task_memory
-  container_cpu         = var.container_cpu
-  container_memory      = var.container_memory
-  container_port        = var.container_port
-  service_name          = var.service_name
-  task_desired_count    = var.task_desired_count
-  target_group_arn      = var.target_group_arn
+  source             = "./modules/sd-ecs"
+  cluster_name       = var.cluster_name
+  task_family        = var.task_family
+  container_name     = var.container_name
+  container_image    = var.container_image #i change to ECR -> /sd-pipeline-test:latest"
+  task_cpu           = var.task_cpu
+  task_memory        = var.task_memory
+  container_cpu      = var.container_cpu
+  container_memory   = var.container_memory
+  container_port     = var.container_port
+  service_name       = var.service_name
+  task_desired_count = var.task_desired_count
+  target_group_arn   = var.target_group_arn # problem not fixed jet
 }
 
 # Route53 Record

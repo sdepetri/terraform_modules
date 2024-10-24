@@ -13,7 +13,6 @@ output "launch_template_id" {
   value       = aws_launch_template.sd_lt.id
 }
 
-
 # variable "user_data_file" {
 #   description = "Path to the user data file"
 #   type        = string

@@ -32,7 +32,7 @@ variable "instance_type" {
 variable "security_group_id" {
   description = "Security Group ID for the instances"
   type        = string
-  default     = "sd_alb_sg" 
+  default     = "sd_alb_sg"
 }
 
 variable "asg_min_size" {
@@ -112,7 +112,7 @@ variable "container_image" {
 
 variable "container_name" {
   description = "Name of the container"
-  default = "sd-container"
+  default     = "sd-container"
 }
 
 variable "execution_role_arn" {
@@ -125,7 +125,7 @@ variable "execution_role_arn" {
 
 variable "container_port" {
   description = "Port for the container"
-  default = 80
+  default     = 80
 }
 
 variable "container_cpu" {
@@ -162,15 +162,21 @@ variable "task_memory" {
 
 variable "task_family" {
   description = "Family of the ECS task definition"
-  default = "sd-task"
+  default     = "sd-task"
 }
 
 variable "service_name" {
   description = "Name of the ECS service"
-  default = "sd-service"
+  default     = "sd-service"
 }
 
 variable "target_group_arn" {
   description = "ARN of the target group for the ECS service"
   type        = string
+}
+
+variable "target_group_name" {
+  description = "Name of the target group for the ECS service"
+  type        = string
+  default     = "sd-target-group"
 }
