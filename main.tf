@@ -36,6 +36,15 @@ data "aws_acm_certificate" "sd-certificate" {
   most_recent = true
 }
 
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+  owners = ["amazon"]
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-ecs-hvm-*-x86_64-ebs"]
+  }
+}
+
 # Network Module
 module "network" {
   source = "./modules/network"
@@ -50,11 +59,11 @@ module "sd_asg" {
   user_data_file         = "${path.module}/user_data.sh"
   autoscaling_group_name = "sd_asg"
   private_subnets        = [data.aws_subnet.private_subnet_1.id, data.aws_subnet.private_subnet_2.id]
-  
+  target_group_arn       = module.alb.target_group_arn
   # Variables para el Auto Scaling
-  min_size         = var.asg_min_size
-  desired_capacity = var.asg_desired_capacity
-  max_size         = var.asg_max_size
+  min_size               = var.asg_min_size
+  desired_capacity       = var.asg_desired_capacity
+  max_size               = var.asg_max_size
 }
 
 # ALB Module
@@ -83,7 +92,9 @@ module "sd_ecs" {
   container_port     = var.container_port
   service_name       = var.service_name
   task_desired_count = var.task_desired_count
-  target_group_arn   = var.target_group_arn # problem not fixed jet
+  target_group_arn   = module.alb.target_group_arn # problem not fixed jet
+  autoscaling_group_arn = module.sd_asg.asg_arn 
+  excu_role           = var.excu_role
 }
 
 # Route53 Record

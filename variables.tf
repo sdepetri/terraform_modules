@@ -170,13 +170,11 @@ variable "service_name" {
   default     = "sd-service"
 }
 
-variable "target_group_arn" {
-  description = "ARN of the target group for the ECS service"
-  type        = string
-}
-
 variable "target_group_name" {
   description = "Name of the target group for the ECS service"
   type        = string
   default     = "sd-target-group"
+}
+variable "excu_role" {
+  description = "Excelusion role"
 }

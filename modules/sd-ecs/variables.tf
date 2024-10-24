@@ -45,3 +45,11 @@ variable "task_desired_count" {
 variable "target_group_arn" {
   description = "ARN of the target group for the ECS service"
 }
+
+variable "autoscaling_group_arn" {
+  description = "ARN of the target group for the ECS service"
+}
+
+variable "excu_role" {
+  description = "Excelusion role"
+}

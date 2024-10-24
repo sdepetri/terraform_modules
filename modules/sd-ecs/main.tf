@@ -1,13 +1,18 @@
 resource "aws_ecs_cluster" "sd_cluster" {
   name = var.cluster_name
+
+
 }
 
 resource "aws_ecs_task_definition" "sd_task" {
   family                   = var.task_family
+  execution_role_arn       = var.excu_role
   network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
   cpu                      = var.task_cpu
   memory                   = var.task_memory
+
+
   container_definitions    = jsonencode([
     {
       name      = var.container_name
@@ -33,7 +38,7 @@ resource "aws_ecs_service" "sd_service" {
   launch_type     = "EC2"
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.sd_tg #here is the atachment problem 
+    target_group_arn = var.target_group_arn #here is the atachment problem 
     container_name   = var.container_name
     container_port   = var.container_port
   }
@@ -41,35 +46,25 @@ resource "aws_ecs_service" "sd_service" {
   #depends_on = [aws_ecs_task_definition.sd_task] #if its necesary used, uncomment
 }
 
-resource "aws_lb_target_group" "sd_tg" {
-  name     = "sd-target-group"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = data.aws_vpc.internship_vpc.id
+resource "aws_ecs_capacity_provider" "sd_cap_prov" {
+  name = "sd_cap_prov"
 
-  health_check {
-    interval            = 30
-    path                = "/"
-    timeout             = 5
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    matcher             = "200"
+  auto_scaling_group_provider {
+    auto_scaling_group_arn         = var.autoscaling_group_arn
+    managed_termination_protection = "DISABLED"
+
+    managed_scaling {
+      maximum_scaling_step_size = 2
+      minimum_scaling_step_size = 1
+      status                    = "ENABLED"
+      target_capacity           = 1
+    }
   }
 }
 
-# resource "aws_cloudwatch_metric_alarm" "service_cpu" {
-#   alarm_name          = "sd-service-cpu-high"
-#   comparison_operator = "GreaterThanThreshold"
-#   evaluation_periods  = "2"
-#   metric_name        = "CPUUtilization"
-#   namespace          = "AWS/ECS"
-#   period             = "60"
-#   statistic          = "Average"
-#   threshold          = "80"
-#   alarm_description  = "This metric monitors ECS service CPU utilization"
-  
-#   dimensions = {
-#     ClusterName = aws_ecs_cluster.sd_cluster.name
-#     ServiceName = aws_ecs_service.sd_service.name
-#   }
-# }
+resource "aws_ecs_cluster_capacity_providers" "example" {
+  cluster_name = aws_ecs_cluster.sd_cluster.name
+
+  capacity_providers = [aws_ecs_capacity_provider.sd_cap_prov.name]
+
+}

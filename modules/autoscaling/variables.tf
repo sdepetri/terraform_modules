@@ -42,3 +42,7 @@ variable "max_size" {
   description = "Maximum number of instances in the Auto Scaling Group"
   type        = number
 }
+
+variable "target_group_arn" {
+  description = "Name of the Target Group"
+}
