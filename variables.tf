@@ -172,11 +172,6 @@ variable "service_name" {
   description = "Name of the ECS service"
 }
 
-variable "task_desired_count" {
-  description = "Desired number of tasks"
-  default = 2
-}
-
 variable "target_group_arn" {
   description = "ARN of the target group for the ECS service"
 }
