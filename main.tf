@@ -64,6 +64,7 @@ module "sd_asg" {
   min_size               = var.asg_min_size
   desired_capacity       = var.asg_desired_capacity
   max_size               = var.asg_max_size
+  iam_inst_profile_arn   = "arn:aws:iam::253490770873:instance-profile/ecsInstanceRole"
 }
 
 # ALB Module

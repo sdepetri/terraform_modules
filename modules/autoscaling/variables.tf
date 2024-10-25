@@ -1,17 +1,21 @@
 variable "launch_template_name" {
   description = "Name of the Launch Template"
+  type = string
 }
 
 variable "ami_id" {
   description = "AMI ID for the instances"
+  type = string
 }
 
 variable "instance_type" {
   description = "EC2 instance type for the Auto Scaling Group"
+  type = string
 }
 
 variable "security_group_id" {
   description = "Security Group ID for the instances"
+  type = string
 }
 
 variable "user_data_file" {
@@ -21,6 +25,7 @@ variable "user_data_file" {
 
 variable "autoscaling_group_name" {
   description = "Name of the Auto Scaling Group"
+  type = string
 }
 
 variable "private_subnets" {
@@ -44,5 +49,11 @@ variable "max_size" {
 }
 
 variable "target_group_arn" {
-  description = "Name of the Target Group"
+  description = "ARN of the Target Group"
+  type = string
+}
+
+variable "iam_inst_profile_arn" {
+  description = "Iam instance profile ARN"
+  type = string
 }

@@ -38,7 +38,7 @@ variable "security_group_id" {
 variable "asg_min_size" {
   description = "Minimum size of Auto Scaling Group"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "private_subnets" {
@@ -49,13 +49,13 @@ variable "private_subnets" {
 variable "asg_max_size" {
   description = "Maximum size of Auto Scaling Group"
   type        = number
-  default     = 3
+  default     = 2
 }
 
 variable "asg_desired_capacity" {
   description = "Desired capacity of Auto Scaling Group"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 # ALB Variables
